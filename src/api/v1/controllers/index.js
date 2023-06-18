@@ -1,8 +1,9 @@
 //----Impoerts---
-const{RegisterUser,LogingUser}= require("./User");
+const{RegisterUser,LogingUser, GetUserById}= require("./User");
 
 //----Exports---
 module.exports = {
     RegisterUser,
-    LogingUser
+    LogingUser,
+    GetUserById
 };

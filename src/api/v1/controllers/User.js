@@ -3,6 +3,7 @@ const bcrypt = require("bcrypt");
 //---Custom Libaries and modules----
 const {UserModel} = require("../models");
 const { json } = require("express");
+const{GenerateTokens} = require("../helpers/ManageTokens")
 
 //----Controller functions----
 //User registration
@@ -94,8 +95,13 @@ const LogingUser = async(req,res)=>{
             });
         }
 
+        //Generate the acess token
+        const{accessToken}= GenerateTokens(user);
+
+
         return res.status(200).json({
             status: true,
+            accessToken,
             success:{message:"Successfuly Login User"},
         })
     }catch(err){
@@ -107,4 +113,33 @@ const LogingUser = async(req,res)=>{
 
     }
 }
-module.exports = {RegisterUser, LogingUser};
+
+//---Controller function to get user informstion by id---
+const GetUserById = async(req,res)=>{
+    //Request parameters
+    const{userId}= req.params;
+
+    try{
+        const user = await UserModel.findOne({_id:userId}).exec();
+        if(!user){
+            return res.status(404).json({
+                status : fales,
+                success: {message:"No user exist"},
+            });
+        }
+        return res.status(200).json({
+            status : true,
+            user,
+            success: {message:"Successfuly fetch the user"},
+        });
+
+    }catch(err){
+        console.log(err);
+        return res.status(500).json({
+            status : fales,
+            success: {message:"Failed to fetch the user"},
+
+        });
+    }
+}
+module.exports = {RegisterUser, LogingUser, GetUserById};
